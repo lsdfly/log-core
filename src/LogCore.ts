@@ -1,6 +1,7 @@
 import ILogCode, { ILevel } from './ILogCore';
 // const logCore = new LogCode('LogCode');
-let globalLevel = 5, lastSource = '', init = false;
+let globalLevel = 5, lastSource = '', init = false, queue: { [key: number]: any } = {},
+    logCore: any = null;
 class LogCode implements ILogCode {
     /**
      * 
@@ -8,17 +9,43 @@ class LogCode implements ILogCode {
      */
     constructor(name: string) {
         this.name = name || '未定义模块名称';
+
         this.init();
     }
     private init() {
-        init || (init = true) && console.log("%c LogCore日志组件", "font-size:50px;color:red;-webkit-text-fill-color:red;-webkit-text-stroke: 1px black;")
+
+        if (!init) {
+            init = true
+            console.log("%c LogCore日志组件", "font-size:50px;color:red;-webkit-text-fill-color:red;-webkit-text-stroke: 1px black;")
+
+
+        }
+    }
+    static on(level: ILevel, cb: Function) {
+        queue[level] = cb;
     }
     static setLevel(level: ILevel) {
 
         globalLevel = level;
 
     }
-    name = '';
+    static log(...p: any) {
+        logCore || (logCore = new LogCode(''));
+        logCore.log.apply(logCore, p)
+    }
+    static debug(...p: any) {
+        logCore || (logCore = new LogCode(''));
+        logCore.debug.apply(logCore, p)
+    }
+    static error(...p: any) {
+        logCore || (logCore = new LogCode(''));
+        logCore.error.apply(logCore, p)
+    }
+    static warn(...p: any) {
+        logCore || (logCore = new LogCode(''));
+        logCore.warn.apply(logCore, p)
+    }
+    private name = '';
 
     /**
      * 调试级别
@@ -43,16 +70,18 @@ class LogCode implements ILogCode {
     // 信息级别
     // static LEVEL_INFO = 0;
     log(...p: any): void {
-        this.debug('设置日志级别', globalLevel)
+        console.debug('设置日志级别', globalLevel)
         if (globalLevel >= LogCode.LEVEL_LOG) {
-            this.logSource();
+            let s = this.logSource();
+            queue[LogCode.LEVEL_LOG] && queue[LogCode.LEVEL_ERROR](p, s);
             p.unshift(`${this.name}:`);
             console.log.apply(this, p)
         }
     }
     debug(...p: any): void {
         if (globalLevel >= LogCode.LEVEL_DEBUG) {
-            this.logSource();
+            let s = this.logSource();
+            queue[LogCode.LEVEL_DEBUG] && queue[LogCode.LEVEL_ERROR](p, s);
             p.unshift(`${this.name}:`);
             console.debug.apply(this, p);
         }
@@ -60,14 +89,16 @@ class LogCode implements ILogCode {
 
     warn(...p: any): void {
         if (globalLevel >= LogCode.LEVEL_WARN) {
-            this.logSource();
+            let s = this.logSource();
+            queue[LogCode.LEVEL_WARN] && queue[LogCode.LEVEL_ERROR](p, s);
             p.unshift(`${this.name}:`);
             console.warn.apply(this, p)
         }
     }
     error(...p: any): void {
         if (globalLevel >= LogCode.LEVEL_ERROR) {
-            this.logSource();
+            let s = this.logSource();
+            queue[LogCode.LEVEL_ERROR] && queue[LogCode.LEVEL_ERROR](p, s);
             p.unshift(`${this.name}:`);
             console.error.apply(this, p)
         }
@@ -81,9 +112,9 @@ class LogCode implements ILogCode {
             lastSource = _sourec;
             console.log(`${this.name}: %c${time}%c ${_sourec}`, 'color:red', 'color:#000');
         }
-
+        return `${time} ${_sourec}`;
     }
-    
+
     private getSource(depth = 2): any {
 
         let error = {} as Error, _sourec = {} as any;

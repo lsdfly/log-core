@@ -1,6 +1,6 @@
 export default interface ILogCode {
     //模块名称
-    readonly  name:string|undefined
+    // private  readonly  name:string|undefined
     //普通日志
     log(...p: any): void
     //调试日志
