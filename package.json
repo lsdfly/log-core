@@ -1,8 +1,12 @@
 {
   "name": "log-core",
   "version": "1.0.0",
-  "main": "./dist/LogCore.js",
-  "dependencies": {
+  "description": "",
+  "main": "dist/log-core.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
     "rollup": "^1.16.2",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-commonjs": "^10.0.0",
@@ -11,5 +15,19 @@
     "rollup-plugin-typescript2": "^0.21.2",
     "rollup-plugin-uglify": "^6.0.2",
     "typescript": "^3.5.2"
-  }
+  },
+  "scripts": {
+    "dev":"rollup -c rollup.config.js -w",
+    "build":"rollup -c rollup.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lsdfly/log-core.git"
+  },
+  "keywords": [
+    "LogCore"
+  ],
+  "author": "381888954@qq.com",
+  "license": "LGPL-3.0-or-later"
 }
