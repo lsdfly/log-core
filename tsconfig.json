@@ -3,7 +3,7 @@
       "declarationDir": "dist",
       "declaration":true ,
       "noEmitHelpers": false,
-      "target": "esnext",
+      "target": "es3",
       "module": "esnext",
       "strict": true,
       "jsx": "preserve",

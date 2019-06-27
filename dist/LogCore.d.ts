@@ -6,8 +6,13 @@ declare class LogCode implements ILogCode {
      */
     constructor(name: string);
     private init;
+    static on(level: ILevel, cb: Function): void;
     static setLevel(level: ILevel): void;
-    name: string;
+    static log(...p: any): void;
+    static debug(...p: any): void;
+    static error(...p: any): void;
+    static warn(...p: any): void;
+    private name;
     /**
      * 调试级别
      */
